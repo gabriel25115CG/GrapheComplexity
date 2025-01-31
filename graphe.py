@@ -17,6 +17,7 @@ class GrapheNonOriente:
         """
         self.ajouter_sommet(sommet1)  # S'assure que le premier sommet existe.
         self.ajouter_sommet(sommet2)  # S'assure que le second sommet existe.
+        poids = int(poids)  # Force le poids à être un entier.
         self.adjacence[sommet1][sommet2] = poids  # Ajoute l'arête de sommet1 vers sommet2.
         self.adjacence[sommet2][sommet1] = poids  # Ajoute l'arête de sommet2 vers sommet1.
 

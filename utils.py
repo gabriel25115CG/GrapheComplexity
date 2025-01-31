@@ -5,14 +5,14 @@ from typing import List
 from graphe import GrapheNonOriente
 
 
-def generer_graphe_aleatoire(nb_sommets: int, nb_aretes: int, *, poids_min: float = 1.0, poids_max: float = 10.0) -> GrapheNonOriente:
+def generer_graphe_aleatoire(nb_sommets: int, nb_aretes: int, *, poids_min: int = 1, poids_max: int = 10) -> GrapheNonOriente:
     """
     Génère un graphe non orienté aléatoire avec un nombre donné de sommets et d'arêtes.
     
     :param nb_sommets: Nombre total de sommets dans le graphe.
     :param nb_aretes: Nombre total d'arêtes à générer.
-    :param poids_min: Poids minimal des arêtes.
-    :param poids_max: Poids maximal des arêtes.
+    :param poids_min: Poids minimal des arêtes (entier).
+    :param poids_max: Poids maximal des arêtes (entier).
     :return: Un objet GrapheNonOriente représentant le graphe généré.
     """
     # Vérifie que le nombre d'arêtes permet de garantir la connexité du graphe
@@ -40,8 +40,8 @@ def generer_graphe_aleatoire(nb_sommets: int, nb_aretes: int, *, poids_min: floa
         sommet1 = np.random.choice(list(sommets_connectes))
         sommet2 = np.random.choice(list(sommets_non_connectes))
         
-        # Générer un poids aléatoire pour l'arête
-        poids = np.random.uniform(poids_min, poids_max)
+        # Générer un poids entier pour l'arête
+        poids = np.random.randint(poids_min, poids_max + 1)  # Génère un entier entre poids_min et poids_max inclus
         
         # Ajouter l'arête au graphe
         graphe.ajouter_arete(sommet1, sommet2, poids)
@@ -59,21 +59,22 @@ def generer_graphe_aleatoire(nb_sommets: int, nb_aretes: int, *, poids_min: floa
         
         # Vérifie si une arête existe déjà entre ces deux sommets
         if sommet2 not in graphe.adjacence[sommet1]:
-            poids = np.random.uniform(poids_min, poids_max)
+            # Générer un poids entier pour l'arête
+            poids = np.random.randint(poids_min, poids_max + 1)  # Génère un entier entre poids_min et poids_max inclus
             graphe.ajouter_arete(sommet1, sommet2, poids)
             aretes_ajoutees += 1  # Incrémente le compteur d'arêtes ajoutées
     
     return graphe
 
 
-def afficher_graphes_cote_a_cote(tailles_graphes: List[int], *, densite: float = 0.3, poids_min: float = 1.0, poids_max: float = 10.0):
+def afficher_graphes_cote_a_cote(tailles_graphes: List[int], *, densite: float = 0.3, poids_min: int = 1, poids_max: int = 10):
     """
     Génère et affiche plusieurs graphes aléatoires côte à côte en fonction des tailles spécifiées.
     
     :param tailles_graphes: Liste des tailles de graphes (nombre de sommets) à générer et afficher.
     :param densite: Densité du graphe (proportion des arêtes par rapport au graphe complet).
-    :param poids_min: Poids minimal des arêtes.
-    :param poids_max: Poids maximal des arêtes.
+    :param poids_min: Poids minimal des arêtes (entier).
+    :param poids_max: Poids maximal des arêtes (entier).
     """
     n = len(tailles_graphes)  # Nombre de graphes à afficher
     fig, axes = plt.subplots(1, n, figsize=(5 * n, 5))  # Création d'une figure avec n sous-graphiques
@@ -96,7 +97,7 @@ def afficher_graphes_cote_a_cote(tailles_graphes: List[int], *, densite: float =
         # Ajout des arêtes et des poids au graphe NetworkX
         for sommet1, voisins in graphe.adjacence.items():
             for sommet2, poids in voisins.items():
-                G.add_edge(sommet1, sommet2, weight=poids)
+                G.add_edge(sommet1, sommet2, weight=int(poids))  # S'assurer que le poids est un entier
         
         # Disposition des nœuds du graphe (spring_layout donne une disposition plus naturelle)
         pos = nx.spring_layout(G)
